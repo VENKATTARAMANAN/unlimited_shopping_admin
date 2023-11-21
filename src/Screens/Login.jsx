@@ -9,6 +9,7 @@ import {
   FormLabel,
   Image,
   Input,
+  useToast,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import axios from "axios";
@@ -17,6 +18,7 @@ import { url } from "../config/api";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const toast = useToast();
   const { values, handleSubmit, handleChange, handleBlur } = useFormik({
     initialValues: {
       email: "admin@gmail.com",
@@ -26,7 +28,13 @@ const LoginPage = () => {
       try {
         const { data,status } = await axios.post(`${url}/admin/login`,values);
         if (status === 200) {
-
+          toast({
+            description: data.data,
+            status: "success",
+            duration: 1500,
+            position: "top-right",
+            isClosable: true,
+          });
           localStorage.setItem("AuthTokenAdmin", data.token);
           navigate("/homepage");
         }
